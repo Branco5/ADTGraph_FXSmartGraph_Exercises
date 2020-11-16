@@ -26,6 +26,8 @@ package com.brunomnsilva.smartgraph;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graph.Graph;
@@ -42,20 +44,22 @@ import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
  *
  * @author brunomnsilva
  */
-public class Main extends Application {
+public class MainGraph extends Application {
 
     private volatile boolean running;
 
     @Override
     public void start(Stage ignored) {
 
-        Graph<String, String> g = build_sample_graph(); //Build Graph
+        GraphImplementation<String, ToggleEdge> g = build_sample_graph(); //Build Graph
         System.out.println(g);
         
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-        SmartGraphPanel<String, String> graphView = new SmartGraphPanel<>(g, strategy);
+        SmartGraphPanel<String, ToggleEdge> graphView = new SmartGraphPanel<>(g, strategy);
 
-        Scene scene = new Scene(graphView, 1024, 768);
+        SmartGraphDemoContainer container = new SmartGraphDemoContainer(graphView);
+
+        Scene scene = new Scene(container, 1024, 768);
 
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setTitle("JavaFX SmartGraph Visualization");
@@ -66,6 +70,12 @@ public class Main extends Application {
 
         graphView.init();
 
+        //TODO: Adicionar métodos solicitados à classe GraphImplementation e testá-los aqui.
+        //TODO: Verificar correção através de inspeção visual do grafo.
+
+        //É fornecida a resolução da Q.5 sumOfActiveEdges
+        int sumActiveEdges = g.sumOfActiveEdges();
+        System.out.println("sumOfActiveEdges = " + sumActiveEdges);
 
     }
 
@@ -76,9 +86,9 @@ public class Main extends Application {
         launch(args);
     }
 
-    private Graph<String, String> build_sample_graph() {
+    private GraphImplementation<String, ToggleEdge> build_sample_graph() {
 
-        Graph<String, String> g = new GraphEdgeList<>();
+        GraphImplementation<String, ToggleEdge> g = new GraphImplementation<>();
 
         Vertex<String> a= g.insertVertex("A");
         Vertex<String> b=g.insertVertex("B");
@@ -87,18 +97,15 @@ public class Main extends Application {
         Vertex<String> e=g.insertVertex("E");
         Vertex<String> f=g.insertVertex("F");
 
-        g.insertEdge(a, b, "AB");
-        g.insertEdge(b  , a, "AB2");
-        g.insertEdge(a, c, "AC");
-        g.insertEdge(a, d, "AD");
-        g.insertEdge(b, c, "BC");
-        g.insertEdge(c, d, "CD");
-        g.insertEdge(b, e, "BE");
-        g.insertEdge(f, d, "DF");
-        g.insertEdge(f, d, "DF2");
-
-        //yep, its a loop!
-        g.insertEdge(a, a, "Loop");
+        g.insertEdge(a, b, new ToggleEdge(1, true));
+        g.insertEdge(b  , a, new ToggleEdge(2, true));
+        g.insertEdge(a, c, new ToggleEdge(5, false));
+        g.insertEdge(a, d, new ToggleEdge(9, true));
+        g.insertEdge(b, c, new ToggleEdge(11, true));
+        g.insertEdge(c, d, new ToggleEdge(3, false));
+        g.insertEdge(b, e, new ToggleEdge(-1, true));
+        g.insertEdge(f, d, new ToggleEdge(7, true));
+        g.insertEdge(f, d, new ToggleEdge(9, false));
 
         return g;
     }

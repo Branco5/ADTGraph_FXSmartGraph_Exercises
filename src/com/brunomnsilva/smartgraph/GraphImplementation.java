@@ -1,50 +1,11 @@
-/* 
- * The MIT License
- *
- * Copyright 2019 brunomnsilva@gmail.com.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-package com.brunomnsilva.smartgraph.graph;
+package com.brunomnsilva.smartgraph;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import com.brunomnsilva.smartgraph.graph.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-/**
- * ADT Graph implementation that stores a collection of edges (and vertices) and
- * where each edge contains the references for the vertices it connects.
- * <br>
- * Does not allow duplicates of stored elements through <b>equals</b> criteria.
- *
- * @param <V> Type of element stored at a vertex
- * @param <E> Type of element stored at an edge
- * 
- * @author brunomnsilva
- */
-public class GraphEdgeList<V, E> implements Graph<V, E> {
-
-    /* inner classes are defined at the end of the class, so are the auxiliary methods 
+public class GraphImplementation<V, E extends ValuedEdge> implements Graph<V, E> {
+    /* inner classes are defined at the end of the class, so are the auxiliary methods
      */
     private Map<V, Vertex<V>> vertices;
     private Map<E, Edge<E, V>> edges;
@@ -52,9 +13,20 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
     /**
      * Creates a empty graph.
      */
-    public GraphEdgeList() {
+    public GraphImplementation() {
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
+    }
+
+    //TODO: adicionar métodos das questões.
+    public int sumOfActiveEdges() {
+        int sum = 0;
+        for(Edge<E, V> e : edges()) {
+            if(e.element().isActive()) {
+                sum += e.element().value();
+            }
+        }
+        return sum;
     }
 
     @Override
@@ -98,18 +70,7 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
 
             if(vertices[0] == vertex || vertices[1] == vertex) {
                 incident.add(edge);
-            }
-
-            //alternativa 2
-            //if( ((MyEdge)edge).contains(vertex) ) {
-            //    incident.add(edge);
-            //}
-
-            //alternativa 3
-            //MyEdge myEdge = (MyEdge)edge;
-            //if(myEdge.vertexInbound == vertex || myEdge.vertexOutbound == vertex) {
-            //    incident.add(edge);
-            //}
+            }        
         }
 
         return incident;
@@ -161,7 +122,7 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public synchronized Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement) 
+    public synchronized Edge<E, V> insertEdge(Vertex<V> u, Vertex<V> v, E edgeElement)
             throws InvalidVertexException, InvalidEdgeException {
 
         MyVertex vU = checkVertex(u);
@@ -190,9 +151,9 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public synchronized Edge<E, V> insertEdge(V vElement1, V vElement2, E edgeElement) 
+    public synchronized Edge<E, V> insertEdge(V vElement1, V vElement2, E edgeElement)
             throws InvalidVertexException, InvalidEdgeException {
-        
+
         if (existsEdgeWith(edgeElement)) {
             throw new InvalidEdgeException("There's already an edge with this element.");
         }
@@ -360,7 +321,7 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
      */
     private MyVertex checkVertex(Vertex<V> v) throws InvalidVertexException {
         if(v == null) throw new InvalidVertexException("Null vertex.");
-        
+
         MyVertex vertex;
         try {
             vertex = (MyVertex) v;
@@ -377,7 +338,7 @@ public class GraphEdgeList<V, E> implements Graph<V, E> {
 
     private MyEdge checkEdge(Edge<E, V> e) throws InvalidEdgeException {
         if(e == null) throw new InvalidEdgeException("Null edge.");
-        
+
         MyEdge edge;
         try {
             edge = (MyEdge) e;

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ADTGraph_JavaFXSmartGraph_Template.iml" filepath="$PROJECT_DIR$/ADTGraph_JavaFXSmartGraph_Template.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ADTGraph_JavaFXSmartGraph_Exercises.iml" filepath="$PROJECT_DIR$/ADTGraph_JavaFXSmartGraph_Exercises.iml" />
     </modules>
   </component>
 </project>
